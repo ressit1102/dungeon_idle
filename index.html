@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Dungeon Idle - Ngục tối Nhàn rỗi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* CSS tùy chỉnh cho Nhật ký Chiến đấu (Cuộn ngược) */
+        #game-log {
+            height: 340px; /* Chiều cao cố định cho log */
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse; /* Log cuộn ngược */
+            background-color: #1f2937;
+            padding: 0 8px;
+        }
+        #game-log p { 
+            margin: 0; 
+            padding: 4px 0; 
+            border-bottom: 1px dashed #4b5563;
+            font-size: 0.875rem;
+            color: #d1d5db;
+        }
+        /* Đảm bảo thanh cuộn (scrollbar) không bị che khuất */
+        #dungeon-menu-content, #upgrade-list, #quest-list, #shop-menu-content {
+            max-height: 240px; 
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-5 font-sans">
+
+    <h1 class="text-4xl font-bold text-center mb-6 text-gray-800 tracking-wide">
+        Dungeon Idle: Ngục Tối Nhàn Rỗi
+    </h1>
+    
+    <div id="game-container" class="grid grid-cols-12 max-w-7xl mx-auto gap-4">
+    
+        <div id="stats-panel" class="col-span-3 bg-white p-4 rounded-xl shadow-2xl flex-shrink-0 space-y-4 h-full">
+            
+            <h2 class="text-2xl font-extrabold border-b pb-2 text-gray-700">⚔️ Anh Hùng</h2>
+            <div id="hero-stats-panel" class="text-gray-600 space-y-1 text-sm"> 
+                <p class="text-center italic text-gray-400">Đang tải chỉ số...</p>
+            </div>
+            
+            <div class="pt-2">
+                <p class="text-xs font-semibold text-gray-600">Kinh nghiệm:</p>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="hero-xp-bar" class="bg-purple-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <hr class="border-gray-300">
+
+            <h2 class="text-lg font-semibold border-b pb-2 text-gray-700">🛡️ Trang bị</h2>
+            <div id="hero-equips" class="space-y-2 text-sm text-gray-700">
+                <p class="text-center italic text-gray-400">Không có trang bị.</p>
+            </div>
+
+            <hr class="border-gray-300">
+
+            <h2 class="text-lg font-semibold border-b pb-2 text-gray-700">🎒 Kho đồ</h2>
+            <div id="hero-inventory" class="text-sm text-gray-600 h-40 overflow-y-auto border p-2 rounded bg-gray-50 space-y-1">
+                <p class="text-gray-400 italic text-center">Đang tải...</p>
+            </div>
+
+            <hr class="border-gray-300">
+
+            <div class="flex flex-col space-y-3 pt-2">
+                <button id="start-combat-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-3 rounded-lg transition duration-150 shadow-lg text-base">
+                    ▶️ Bắt đầu Thám hiểm
+                </button>
+                <button id="stop-combat-btn" disabled class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-3 rounded-lg transition duration-150 shadow-lg text-base disabled:opacity-50 disabled:cursor-not-allowed">
+                    ⏸️ Dừng Thám hiểm
+                </button>
+            </div>
+            
+            <hr class="border-gray-300">
+
+            <div class="flex flex-col space-y-2 pt-2">
+                <button id="save-game-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-lg transition duration-150 shadow-md text-base">
+                    💾 Lưu Tiến Trình
+                </button>
+                <button id="load-game-btn" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-3 rounded-lg transition duration-150 shadow-md text-base">
+                    📥 Tải Game
+                </button>
+                <button id="delete-save-btn" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-1 px-3 rounded transition duration-150 shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+                    🗑️ Xóa Save
+                </button>
+                <p id="save-timestamp" class="text-xs text-gray-500 text-center italic"></p>
+            </div>
+        </div>
+        
+        <div class="col-span-6 flex flex-col space-y-4">
+            
+            <div id="combat-arena" class="flex-grow flex flex-col items-center justify-between p-6 bg-gray-900 rounded-xl shadow-2xl space-y-6">
+                
+                <h2 class="text-4xl font-black text-yellow-400 mb-4 tracking-wider">ARENA</h2>
+                
+                <div class="flex justify-around items-center w-full max-w-lg">
+                    
+                    <div id="hero-display" class="relative w-48 h-48 bg-blue-700 border-4 border-blue-400 rounded-xl flex flex-col items-center justify-center text-white text-xl font-bold shadow-2xl">
+                        <span class="absolute top-2 text-sm text-blue-200">Anh hùng</span>
+                        <span id="arena-hero-hp" class="text-3xl font-mono">100/100</span>
+                        <div id="hero-hp-bar" class="absolute bottom-0 w-full h-2 bg-red-500 rounded-b-xl transition-all duration-300" style="width: 100%"></div>
+                    </div>
+
+                    <span class="text-6xl text-yellow-500 mx-8 animate-pulse">⚡️</span>
+
+                    <div id="enemy-display" class="relative w-48 h-48 bg-red-700 border-4 border-red-400 rounded-xl flex flex-col items-center justify-center text-white text-xl font-bold shadow-2xl">
+                        <span class="absolute top-2 text-sm text-red-200">Kẻ thù</span>
+                        <span id="enemy-name-display" class="text-2xl font-black">???</span>
+                        <span id="enemy-hp-display" class="text-xl font-mono">N/A</span>
+                        <div id="enemy-hp-bar" class="absolute bottom-0 w-full h-2 bg-green-500 rounded-b-xl transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-900 rounded-xl shadow-2xl overflow-hidden">
+                <h2 class="text-xl font-bold border-b pb-2 text-white p-3 sticky top-0 bg-gray-800 z-10">📜 Nhật ký Chiến đấu</h2>
+                <div id="game-log">
+                    <p>Khởi tạo trò chơi...</p>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="col-span-3 flex flex-col space-y-4">
+            
+            <div id="upgrade-menu-panel" class="bg-white p-4 rounded-xl shadow-lg space-y-4">
+                <h2 class="text-xl font-semibold border-b pb-2 text-gray-700">💰 Nâng cấp Chỉ số</h2>
+                <div id="upgrade-list" class="space-y-3 max-h-60 overflow-y-auto pr-2">
+                </div>
+            </div>
+
+            <div id="dungeon-menu-panel" class="bg-white p-4 rounded-xl shadow-lg space-y-4">
+                <h2 class="text-xl font-semibold border-b pb-2 text-gray-700">🗺️ Chọn Khu vực</h2>
+                <div id="dungeon-menu-content" class="space-y-3"> 
+                </div>
+            </div>
+            
+            <div id="shop-menu-panel" class="bg-white p-4 rounded-xl shadow-lg space-y-4"> 
+                <h2 class="text-xl font-semibold border-b pb-2 text-gray-700">🛒 Cửa hàng</h2>
+                <div id="shop-menu-content" class="space-y-3 max-h-60 overflow-y-auto pr-2"> 
+                    <p class="text-gray-400 text-center italic">Đang tải shop...</p>
+                </div>
+            </div>
+
+            <div id="quest-menu-panel" class="bg-white p-4 rounded-xl shadow-lg space-y-4">
+                <h2 class="text-xl font-semibold border-b pb-2 text-gray-700">📜 Nhiệm vụ</h2>
+                <div id="quest-list" class="space-y-3 max-h-60 overflow-y-auto pr-2">
+                    <p class="text-gray-400 italic">Đang tải nhiệm vụ...</p>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+    <script type="module" src="main.js"></script>
+</body>
+</html>

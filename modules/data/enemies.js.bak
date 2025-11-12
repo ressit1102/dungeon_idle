@@ -1,0 +1,423 @@
+// modules/data/enemies.js
+
+export const enemyList = {
+    // ======== KẺ THÙ THƯỜNG ========
+
+    "Slime": {
+        baseHP: 20,
+        baseAttack: 3,
+        baseDefense: 1,
+        goldDrop: [5, 10],
+        xpDrop: 10,
+        lootTable: { Common: 100, Rare: 0 }
+    },
+    "Goblin": {
+        baseHP: 25,
+        baseAttack: 4,
+        baseDefense: 2,
+        goldDrop: [8, 12],
+        xpDrop: 15,
+        lootTable: { Common: 90, Rare: 10 }
+    },
+    "Bat": {
+        baseHP: 30,
+        baseAttack: 5,
+        baseDefense: 2,
+        goldDrop: [10, 15],
+        xpDrop: 20,
+        lootTable: { Common: 90, Rare: 10 }
+    },
+    "Skeleton": {
+        baseHP: 40,
+        baseAttack: 6,
+        baseDefense: 3,
+        goldDrop: [12, 20],
+        xpDrop: 25,
+        lootTable: { Common: 90, Rare: 10 }
+    },
+    "Zombie Miner": {
+        baseHP: 60,
+        baseAttack: 8,
+        baseDefense: 4,
+        goldDrop: [15, 25],
+        xpDrop: 35,
+        lootTable: { Common: 90, Rare: 10 }
+    },
+    "Cave Spider": {
+        baseHP: 55,
+        baseAttack: 9,
+        baseDefense: 3,
+        goldDrop: [14, 24],
+        xpDrop: 30,
+        lootTable: { Common: 85, Rare: 15 }
+    },
+    "Ghost": {
+        baseHP: 70,
+        baseAttack: 10,
+        baseDefense: 4,
+        goldDrop: [18, 28],
+        xpDrop: 40,
+        lootTable: { Common: 80, Rare: 20 }
+    },
+    "Wraith": {
+        baseHP: 85,
+        baseAttack: 11,
+        baseDefense: 5,
+        goldDrop: [20, 30],
+        xpDrop: 45,
+        lootTable: { Common: 80, Rare: 20 }
+    },
+    "Stone Golem": {
+        baseHP: 100,
+        baseAttack: 12,
+        baseDefense: 8,
+        goldDrop: [25, 35],
+        xpDrop: 50,
+        lootTable: { Common: 75, Rare: 25 }
+    },
+    "Cursed Archer": {
+        baseHP: 90,
+        baseAttack: 13,
+        baseDefense: 5,
+        goldDrop: [22, 35],
+        xpDrop: 55,
+        lootTable: { Common: 75, Rare: 25 }
+    },
+    "Ice Wolf": {
+        baseHP: 120,
+        baseAttack: 15,
+        baseDefense: 6,
+        goldDrop: [28, 40],
+        xpDrop: 60,
+        lootTable: { Common: 70, Rare: 30 }
+    },
+    "Frost Golem": {
+        baseHP: 150,
+        baseAttack: 16,
+        baseDefense: 8,
+        goldDrop: [30, 45],
+        xpDrop: 70,
+        lootTable: { Common: 70, Rare: 30 }
+    },
+    "Water Serpent": {
+        baseHP: 160,
+        baseAttack: 17,
+        baseDefense: 8,
+        goldDrop: [35, 50],
+        xpDrop: 80,
+        lootTable: { Common: 65, Rare: 35 }
+    },
+    "Coral Guardian": {
+        baseHP: 180,
+        baseAttack: 18,
+        baseDefense: 10,
+        goldDrop: [40, 55],
+        xpDrop: 90,
+        lootTable: { Common: 65, Rare: 35 }
+    },
+    "Swamp Lurker": {
+        baseHP: 190,
+        baseAttack: 19,
+        baseDefense: 9,
+        goldDrop: [45, 60],
+        xpDrop: 100,
+        lootTable: { Common: 60, Rare: 40 }
+    },
+    "Poison Slime": {
+        baseHP: 200,
+        baseAttack: 20,
+        baseDefense: 9,
+        goldDrop: [48, 65],
+        xpDrop: 110,
+        lootTable: { Common: 60, Rare: 40 }
+    },
+    "Lava Elemental": {
+        baseHP: 230,
+        baseAttack: 22,
+        baseDefense: 11,
+        goldDrop: [55, 70],
+        xpDrop: 120,
+        lootTable: { Common: 60, Rare: 40 }
+    },
+    "Fire Imp": {
+        baseHP: 210,
+        baseAttack: 21,
+        baseDefense: 10,
+        goldDrop: [52, 68],
+        xpDrop: 115,
+        lootTable: { Common: 60, Rare: 40 }
+    },
+    "Crystal Beetle": {
+        baseHP: 240,
+        baseAttack: 22,
+        baseDefense: 12,
+        goldDrop: [60, 75],
+        xpDrop: 130,
+        lootTable: { Common: 55, Rare: 45 }
+    },
+    "Gem Guardian": {
+        baseHP: 250,
+        baseAttack: 23,
+        baseDefense: 12,
+        goldDrop: [65, 80],
+        xpDrop: 140,
+        lootTable: { Common: 55, Rare: 45 }
+    },
+    "Mummy": {
+        baseHP: 270,
+        baseAttack: 24,
+        baseDefense: 13,
+        goldDrop: [70, 85],
+        xpDrop: 150,
+        lootTable: { Common: 50, Rare: 50 }
+    },
+    "Sand Wraith": {
+        baseHP: 280,
+        baseAttack: 25,
+        baseDefense: 14,
+        goldDrop: [75, 90],
+        xpDrop: 160,
+        lootTable: { Common: 50, Rare: 50 }
+    },
+    "Dark Knight": {
+        baseHP: 300,
+        baseAttack: 26,
+        baseDefense: 15,
+        goldDrop: [80, 100],
+        xpDrop: 170,
+        lootTable: { Common: 50, Rare: 50 }
+    },
+    "Soul Reaper": {
+        baseHP: 320,
+        baseAttack: 27,
+        baseDefense: 15,
+        goldDrop: [85, 105],
+        xpDrop: 180,
+        lootTable: { Common: 50, Rare: 50 }
+    },
+    "Storm Hawk": {
+        baseHP: 340,
+        baseAttack: 28,
+        baseDefense: 16,
+        goldDrop: [90, 110],
+        xpDrop: 190,
+        lootTable: { Common: 45, Rare: 55 }
+    },
+    "Thunder Spirit": {
+        baseHP: 360,
+        baseAttack: 29,
+        baseDefense: 17,
+        goldDrop: [95, 115],
+        xpDrop: 200,
+        lootTable: { Common: 45, Rare: 55 }
+    },
+    "Deep Stalker": {
+        baseHP: 380,
+        baseAttack: 30,
+        baseDefense: 18,
+        goldDrop: [100, 120],
+        xpDrop: 210,
+        lootTable: { Common: 45, Rare: 55 }
+    },
+    "Abyss Crab": {
+        baseHP: 400,
+        baseAttack: 31,
+        baseDefense: 18,
+        goldDrop: [110, 130],
+        xpDrop: 220,
+        lootTable: { Common: 45, Rare: 55 }
+    },
+    "Corrupted Knight": {
+        baseHP: 420,
+        baseAttack: 32,
+        baseDefense: 20,
+        goldDrop: [120, 140],
+        xpDrop: 230,
+        lootTable: { Common: 40, Rare: 60 }
+    },
+    "Plague Sorcerer": {
+        baseHP: 440,
+        baseAttack: 33,
+        baseDefense: 20,
+        goldDrop: [130, 150],
+        xpDrop: 240,
+        lootTable: { Common: 40, Rare: 60 }
+    },
+    "Star Wisp": {
+        baseHP: 460,
+        baseAttack: 34,
+        baseDefense: 22,
+        goldDrop: [140, 160],
+        xpDrop: 250,
+        lootTable: { Common: 40, Rare: 60 }
+    },
+    "Astral Sentinel": {
+        baseHP: 480,
+        baseAttack: 35,
+        baseDefense: 22,
+        goldDrop: [150, 170],
+        xpDrop: 260,
+        lootTable: { Common: 40, Rare: 60 }
+    },
+    "Obsidian Fiend": {
+        baseHP: 500,
+        baseAttack: 36,
+        baseDefense: 24,
+        goldDrop: [160, 180],
+        xpDrop: 270,
+        lootTable: { Common: 35, Rare: 65 }
+    },
+    "Molten Spider": {
+        baseHP: 520,
+        baseAttack: 37,
+        baseDefense: 24,
+        goldDrop: [170, 190],
+        xpDrop: 280,
+        lootTable: { Common: 35, Rare: 65 }
+    },
+    "Young Dragon": {
+        baseHP: 550,
+        baseAttack: 38,
+        baseDefense: 25,
+        goldDrop: [180, 200],
+        xpDrop: 290,
+        lootTable: { Common: 35, Rare: 65 }
+    },
+    "Drake": {
+        baseHP: 580,
+        baseAttack: 40,
+        baseDefense: 26,
+        goldDrop: [190, 210],
+        xpDrop: 300,
+        lootTable: { Common: 35, Rare: 65 }
+    },
+    "Necromancer": {
+        baseHP: 600,
+        baseAttack: 42,
+        baseDefense: 28,
+        goldDrop: [200, 220],
+        xpDrop: 310,
+        lootTable: { Common: 30, Rare: 70 }
+    },
+    "Death Knight": {
+        baseHP: 620,
+        baseAttack: 44,
+        baseDefense: 30,
+        goldDrop: [210, 230],
+        xpDrop: 320,
+        lootTable: { Common: 30, Rare: 70 }
+    },
+    "Archangel": {
+        baseHP: 650,
+        baseAttack: 46,
+        baseDefense: 32,
+        goldDrop: [220, 240],
+        xpDrop: 330,
+        lootTable: { Common: 25, Rare: 75 }
+    },
+    "Seraph": {
+        baseHP: 680,
+        baseAttack: 48,
+        baseDefense: 34,
+        goldDrop: [230, 250],
+        xpDrop: 340,
+        lootTable: { Common: 25, Rare: 75 }
+    },
+
+    // Additional enemies referenced by dungeon data
+    "Slimeling": {
+        baseHP: 10,
+        baseAttack: 2,
+        baseDefense: 0,
+        goldDrop: [2, 3],
+        xpDrop: 3,
+        lootTable: { Common: 100, Rare: 0 }
+    },
+    "Zombie": {
+        baseHP: 63,
+        baseAttack: 7,
+        baseDefense: 2,
+        goldDrop: [11, 21],
+        xpDrop: 21,
+        lootTable: { Common: 90, Rare: 10 }
+    },
+    "Bone Archer": {
+        baseHP: 56,
+        baseAttack: 6,
+        baseDefense: 2,
+        goldDrop: [9, 19],
+        xpDrop: 19,
+        lootTable: { Common: 90, Rare: 10 }
+    },
+    "Lava Golem": {
+        baseHP: 208,
+        baseAttack: 22,
+        baseDefense: 6,
+        goldDrop: [35, 69],
+        xpDrop: 69,
+        lootTable: { Common: 60, Rare: 40 }
+    },
+    "Smoke Hound": {
+        baseHP: 130,
+        baseAttack: 14,
+        baseDefense: 4,
+        goldDrop: [22, 43],
+        xpDrop: 43,
+        lootTable: { Common: 85, Rare: 15 }
+    },
+    "Snow Wisp": {
+        baseHP: 133,
+        baseAttack: 14,
+        baseDefense: 4,
+        goldDrop: [22, 44],
+        xpDrop: 44,
+        lootTable: { Common: 75, Rare: 25 }
+    },
+    "Voidling": {
+        baseHP: 300,
+        baseAttack: 31,
+        baseDefense: 10,
+        goldDrop: [50, 100],
+        xpDrop: 100,
+        lootTable: { Common: 50, Rare: 50 }
+    },
+    "Abyssal Horror": {
+        baseHP: 375,
+        baseAttack: 39,
+        baseDefense: 12,
+        goldDrop: [62, 125],
+        xpDrop: 125,
+        lootTable: { Common: 45, Rare: 55 }
+    },
+    "Chaos Wisp": {
+        baseHP: 225,
+        baseAttack: 23,
+        baseDefense: 7,
+        goldDrop: [37, 75],
+        xpDrop: 75,
+        lootTable: { Common: 55, Rare: 45 }
+    },
+
+    // ======== BOSS ========
+
+    "Goblin King": { baseHP: 100, baseAttack: 15, baseDefense: 5, goldDrop: [50, 100], xpDrop: 50, lootTable: { Common: 100, Rare: 0 } },
+    "Shadow Beast": { baseHP: 300, baseAttack: 30, baseDefense: 10, goldDrop: [150, 250], xpDrop: 150, lootTable: { Common: 100, Rare: 0 } },
+    "Undead Foreman": { baseHP: 500, baseAttack: 35, baseDefense: 15, goldDrop: [200, 300], xpDrop: 200, lootTable: { Common: 100, Rare: 0 } },
+    "Spirit Queen": { baseHP: 700, baseAttack: 40, baseDefense: 20, goldDrop: [250, 350], xpDrop: 250, lootTable: { Common: 100, Rare: 0 } },
+    "Guardian of the Ruins": { baseHP: 900, baseAttack: 45, baseDefense: 25, goldDrop: [300, 400], xpDrop: 300, lootTable: { Common: 100, Rare: 0 } },
+    "Frost Titan": { baseHP: 1200, baseAttack: 50, baseDefense: 30, goldDrop: [350, 450], xpDrop: 350, lootTable: { Common: 100, Rare: 0 } },
+    "Leviathan": { baseHP: 1500, baseAttack: 55, baseDefense: 35, goldDrop: [400, 500], xpDrop: 400, lootTable: { Common: 100, Rare: 0 } },
+    "Plague Hydra": { baseHP: 1800, baseAttack: 60, baseDefense: 40, goldDrop: [450, 550], xpDrop: 450, lootTable: { Common: 100, Rare: 0 } },
+    "Infernal Drake": { baseHP: 2000, baseAttack: 65, baseDefense: 45, goldDrop: [500, 600], xpDrop: 500, lootTable: { Common: 100, Rare: 0 } },
+    "Shard Golem": { baseHP: 2200, baseAttack: 70, baseDefense: 50, goldDrop: [550, 650], xpDrop: 550, lootTable: { Common: 100, Rare: 0 } },
+    "Pharaoh’s Shade": { baseHP: 2500, baseAttack: 75, baseDefense: 55, goldDrop: [600, 700], xpDrop: 600, lootTable: { Common: 100, Rare: 0 } },
+    "Shadow Lord": { baseHP: 2800, baseAttack: 80, baseDefense: 60, goldDrop: [650, 750], xpDrop: 650, lootTable: { Common: 100, Rare: 0 } },
+    "Tempest Titan": { baseHP: 3000, baseAttack: 85, baseDefense: 65, goldDrop: [700, 800], xpDrop: 700, lootTable: { Common: 100, Rare: 0 } },
+    "Kraken": { baseHP: 3200, baseAttack: 90, baseDefense: 70, goldDrop: [750, 850], xpDrop: 750, lootTable: { Common: 100, Rare: 0 } },
+    "Lord Malachar": { baseHP: 3400, baseAttack: 95, baseDefense: 75, goldDrop: [800, 900], xpDrop: 800, lootTable: { Common: 100, Rare: 0 } },
+    "Celestial Guardian": { baseHP: 3600, baseAttack: 100, baseDefense: 80, goldDrop: [850, 950], xpDrop: 850, lootTable: { Common: 100, Rare: 0 } },
+    "Core Eater": { baseHP: 3800, baseAttack: 105, baseDefense: 85, goldDrop: [900, 1000], xpDrop: 900, lootTable: { Common: 100, Rare: 0 } },
+    "Elder Dragon": { baseHP: 4000, baseAttack: 110, baseDefense: 90, goldDrop: [950, 1050], xpDrop: 950, lootTable: { Common: 100, Rare: 0 } },
+    "Lich King": { baseHP: 4200, baseAttack: 115, baseDefense: 95, goldDrop: [1000, 1100], xpDrop: 1000, lootTable: { Common: 100, Rare: 0 } },
+    "Fallen God": { baseHP: 4500, baseAttack: 120, baseDefense: 100, goldDrop: [1200, 1300], xpDrop: 1200, lootTable: { Common: 100, Rare: 0 } }
+};

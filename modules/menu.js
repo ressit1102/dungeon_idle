@@ -67,8 +67,11 @@ export function renderUpgrades() {
     if (!upgradeMenuEl || !hero) return;
 
     let html = '';
-    
-    Object.entries(upgradeList).forEach(([id, upgrade]) => {
+    // Only show a limited set of upgrade options in the UI (HP, Attack, Defense)
+    const allowedUpgradeIds = ['hp', 'attack', 'defense'];
+    allowedUpgradeIds.forEach(id => {
+        const upgrade = upgradeList[id];
+        if (!upgrade) return;
         const cost = calculateUpgradeCost(upgrade);
         const value = calculateUpgradeValue(upgrade);
         const canAfford = hero.baseStats.gold >= cost;

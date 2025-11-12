@@ -467,7 +467,15 @@ function handleEnemyDefeated() {
 
         // Award relic
         if (currentDungeon.relic) {
-            const relicItem = { id: currentDungeon.relic, type: 'Relic', rarity: 'Legendary', stats: {} };
+            // Create relic as an equippable accessory (assign to 'amulet' slot by default)
+            const relicItem = { 
+                id: currentDungeon.relic, 
+                name: currentDungeon.relic,
+                type: 'Accessory', // treat relics as accessories so they can be equipped
+                slot: 'amulet',     // default slot for relics
+                rarity: 'Legendary', 
+                stats: currentDungeon.relicStats || {} 
+            };
             if (hero.addItemToInventory(relicItem)) {
                 logger.log(`🏆 Nhận Relic: <strong>${currentDungeon.relic}</strong>!`, 'loot');
                     // Show a temporary popup to highlight the relic

@@ -20,7 +20,7 @@ import {
 } from './modules/game.js';
 
 // Import các hàm UI phức tạp
-import { renderInventory, handleSellItem, handleEquipItem } from './modules/inventory.js';
+import { renderInventory, handleSellItem, handleEquipItem, handleUseItem, handleUnequip } from './modules/inventory.js';
 import { renderUpgrades, handleUpgrade, renderDungeonMenu } from './modules/menu.js';
 import { dungeonList } from './modules/data/dungeons.js'; 
 import { saveGame, loadGame as loadGameFromSave, updateSaveLoadUI, deleteSave } from './modules/save.js';
@@ -103,6 +103,11 @@ window.updateGoldEarned = updateGoldEarned;
 window.buyItem = buyItem;
 window.handleManualSave = handleManualSave; // Gán hàm xử lý lưu
 window.loadGameAndStart = loadGameAndStart; // Gán hàm xử lý tải game đã sửa
+
+// Ensure save and inventory helpers are available globally for UI onclick handlers
+window.saveGame = saveGame;
+window.handleUseItem = handleUseItem;
+window.handleUnequip = handleUnequip;
 
 // ⚠️ CẦN SỬA: Không nên gán hero và startGameWithData vào window nếu không cần thiết
 // Các module khác đã import chúng. Giữ lại nếu bạn cần truy cập từ console.

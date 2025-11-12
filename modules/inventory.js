@@ -6,6 +6,44 @@ import { RARITIES } from './data/items.js'; // Import RARITIES để lấy màu 
 
 const logMessage = (msg, type = 'info') => logger.log(msg, type); 
 
+// Item upgrade configuration
+const ITEM_UPGRADE_MAX_LEVEL = 5;
+const ITEM_UPGRADE_MULTIPLIER_PER_LEVEL = 0.20; // +20% per upgrade level
+
+function calculateItemUpgradeCost(item) {
+    // base factor from primary stats
+    const atk = Number(item.stats?.attack || 0);
+    const def = Number(item.stats?.defense || 0);
+    const hp = Number(item.stats?.maxHP || 0);
+    const base = Math.max(1, Math.round((atk + def + hp / 5)));
+    const currentLevel = Number(item.upgradeLevel || 0);
+    // geometric scaling
+    return Math.max(10, Math.floor(base * 20 * Math.pow(1.6, currentLevel)));
+}
+
+function applyItemUpgrade(item) {
+    // Ensure we keep original baseStats to avoid compounding
+    if (!item.baseStats) item.baseStats = JSON.parse(JSON.stringify(item.stats || {}));
+    const lvl = Number(item.upgradeLevel || 0) + 1;
+    // Apply multiplicative increase to each numeric stat in baseStats
+    const newStats = JSON.parse(JSON.stringify(item.baseStats));
+    const mult = 1 + ITEM_UPGRADE_MULTIPLIER_PER_LEVEL * lvl;
+    for (const k of Object.keys(newStats)) {
+        if (typeof newStats[k] === 'number') {
+            // For small fractional stats (critChance/attackSpeed) keep decimal precision
+            if (k.toLowerCase().includes('chance') || k.toLowerCase().includes('speed') || k.toLowerCase().includes('mult')) {
+                newStats[k] = Number((newStats[k] * mult).toFixed(3));
+            } else {
+                newStats[k] = Math.round(newStats[k] * mult);
+            }
+        }
+    }
+    item.stats = newStats;
+    item.upgradeLevel = lvl;
+    // Increase sellValue moderately
+    if (item.sellValue) item.sellValue = Math.round(item.sellValue * (1 + 0.25 * lvl));
+}
+
 // =======================================================
 // CÁC HANDLER ĐƯỢC EXPORT (Theo yêu cầu của bạn)
 // =======================================================
@@ -151,6 +189,7 @@ export function renderInventory() {
         let actionButtonHTML = '';
 
         // Nút Mặc HOẶC Bỏ Mặc
+        let upgradeButtonHTML = '';
         if (isEquipable) {
             actionButtonHTML = `
                 <button
@@ -159,6 +198,16 @@ export function renderInventory() {
                     data-index="${index}"
                 >
                     ${isEquipped ? 'Bỏ Mặc' : 'Mặc'}
+                </button>
+            `;
+            // Upgrade button for equipable items
+            const upgradeLabel = item.upgradeLevel ? `Upgrade (+${item.upgradeLevel})` : 'Upgrade';
+            upgradeButtonHTML = `
+                <button
+                    class="upgrade-item-btn text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1 px-3 rounded transition duration-150"
+                    data-index="${index}"
+                >
+                    🔧 ${upgradeLabel}
                 </button>
             `;
         } 
@@ -177,6 +226,10 @@ export function renderInventory() {
         // Chèn nút hành động chính vào trước nút Bán
         if (actionButtonHTML) {
             actionContainer.insertAdjacentHTML('afterbegin', actionButtonHTML);
+        }
+        // Chèn nút Upgrade (nếu có)
+        if (upgradeButtonHTML) {
+            actionContainer.insertAdjacentHTML('afterbegin', upgradeButtonHTML);
         }
 
         inventoryDiv.appendChild(itemEl);
@@ -209,6 +262,14 @@ export function renderInventory() {
             handleUseItem(index);
         });
     });
+
+    // GÁN SỰ KIỆN CHO NÚT NÂNG CẤP
+    document.querySelectorAll('.upgrade-item-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const index = parseInt(e.currentTarget.dataset.index);
+            handleUpgradeItem(index);
+        });
+    });
 }
 
 /**
@@ -226,4 +287,25 @@ export function handleUnequip(slot) {
     } else {
         logMessage(`⚠️ Không có trang bị ở slot ${slot}.`, 'warn');
     }
+}
+
+/**
+ * Nâng cấp item tại chỉ mục trong inventory.
+ * @param {number} index
+ */
+export function handleUpgradeItem(index) {
+    const item = hero.inventory[index];
+    if (!item) { logMessage(`⚠️ Không tìm thấy vật phẩm ở chỉ mục ${index}.`, 'warn'); return; }
+    if (!item.slot) { logMessage(`⚠️ Vật phẩm **${item.name || item.id}** không thể nâng cấp (không phải trang bị).`, 'warn'); return; }
+    const currentLevel = Number(item.upgradeLevel || 0);
+    if (currentLevel >= ITEM_UPGRADE_MAX_LEVEL) { logMessage(`⚠️ **${item.name || item.id}** đã đạt cấp nâng cấp tối đa.`, 'info'); return; }
+    const cost = calculateItemUpgradeCost(item);
+    if (hero.baseStats.gold < cost) { logMessage(`⚠️ Không đủ vàng để nâng cấp ${item.name || item.id}. Cần ${cost}💰`, 'warn'); return; }
+    // Deduct gold
+    hero.baseStats.gold -= cost;
+    applyItemUpgrade(item);
+    hero.calculateStats();
+    logMessage(`🔧 Đã nâng cấp **${item.name || item.id}** lên +${item.upgradeLevel}. (-${cost}💰)`, 'success');
+    window.updateUI();
+    window.saveGame && window.saveGame();
 }

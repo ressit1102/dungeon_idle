@@ -44,17 +44,20 @@ export function generateLoot(heroLevel, isBoss = false, currentDungeon = null) {
     // =======================================================
     // A. LOGIC RƠI VẬT PHẨM UNIQUE TỪ BOSS
     // =======================================================
+    // We will return a structure { item: <item|null>, materials: { shard: n } }
+    let materialDrop = null;
     if (isBoss && currentDungeon) {
         const uniqueItemId = currentDungeon.bossItemDrop;
-        // Tỷ lệ rơi vật phẩm unique (ví dụ: 50%)
-        const dropChance = 0.5; 
-        
+        const dropChance = 0.5; // 50% unique
         if (uniqueItemId && uniqueItems[uniqueItemId] && Math.random() < dropChance) {
-            // Trả về bản sao của vật phẩm unique
-            return { ...uniqueItems[uniqueItemId], rarity: 'Unique' };
+            return { item: { ...uniqueItems[uniqueItemId], rarity: 'Unique' }, materials: null };
         }
-        
-        // Nếu không rơi Unique, có thể rơi vật phẩm thường (boss có ưu thế)
+
+        // Bosses often drop shards: 65% chance to drop 1-3 shards
+        if (Math.random() < 0.65) {
+            const count = Math.floor(Math.random() * 3) + 1; // 1..3
+            materialDrop = { shard: count };
+        }
     }
 
     // =======================================================
@@ -64,7 +67,7 @@ export function generateLoot(heroLevel, isBoss = false, currentDungeon = null) {
     // Tỷ lệ KHÔNG rơi đồ (boss ít khi không rơi, thường có drop)
     const NO_DROP_CHANCE = isBoss ? 0.35 : 0.7; // Non-boss: 70% no-drop, Boss: 35% no-drop
     if (Math.random() < NO_DROP_CHANCE) {
-        return null;
+        return { item: null, materials: materialDrop };
     }
     
     // --- BƯỚC 1: XÁC ĐỊNH LOẠI VÀ ĐỘ HIẾM ---\
@@ -72,7 +75,7 @@ export function generateLoot(heroLevel, isBoss = false, currentDungeon = null) {
     const itemType = ITEM_TYPES[Math.floor(Math.random() * ITEM_TYPES.length)];
     const template = EQUIPMENT_TEMPLATES[itemType];
     
-    if (!template) return null;
+    if (!template) return { item: null, materials: materialDrop };
 
     const itemRarityId = chooseRarity(isBoss);
     const rarity = RARITIES[itemRarityId];
@@ -120,7 +123,7 @@ export function generateLoot(heroLevel, isBoss = false, currentDungeon = null) {
     // Giá trị bán: Level * Rarity Multiplier * 20 (ví dụ)
     const sellValue = Math.round(heroLevel * rarity.multiplier * 20);
 
-    return {
+    const itemResult = {
         id: itemName,
         name: itemName,
         type: itemType,
@@ -129,4 +132,6 @@ export function generateLoot(heroLevel, isBoss = false, currentDungeon = null) {
         stats: stats,
         sellValue: sellValue, // Giá trị bán
     };
+
+    return { item: itemResult, materials: materialDrop };
 }

@@ -3,7 +3,43 @@
 import { hero, totalGoldEarned, totalEnemiesKilled, logMessage, getCurrentDungeon } from './game.js';
 import { activeQuests } from './quest.js'; 
 
-const SAVE_KEY = 'idle_rpg_save_data';
+export const SAVE_KEY = 'idle_rpg_save_data';
+
+// Storage abstraction: use browser localStorage when available, otherwise use a small
+// file-backed fallback for Node tests (writes .node_local_storage.json)
+let storage;
+if (typeof localStorage !== 'undefined') {
+    storage = localStorage;
+} else {
+    const fs = require('fs');
+    const path = require('path');
+    const FILE = path.resolve(process.cwd(), '.node_local_storage.json');
+    storage = {
+        getItem(key) {
+            try {
+                if (!fs.existsSync(FILE)) return null;
+                const data = JSON.parse(fs.readFileSync(FILE, 'utf8') || '{}');
+                return data[key] || null;
+            } catch (e) { return null; }
+        },
+        setItem(key, val) {
+            let data = {};
+            try {
+                if (fs.existsSync(FILE)) data = JSON.parse(fs.readFileSync(FILE, 'utf8') || '{}');
+            } catch (e) { data = {}; }
+            data[key] = val;
+            fs.writeFileSync(FILE, JSON.stringify(data, null, 2));
+        },
+        removeItem(key) {
+            try {
+                if (!fs.existsSync(FILE)) return;
+                const data = JSON.parse(fs.readFileSync(FILE, 'utf8') || '{}');
+                delete data[key];
+                fs.writeFileSync(FILE, JSON.stringify(data, null, 2));
+            } catch (e) { }
+        }
+    };
+}
 
 /**
  * Thu thập và lưu trạng thái hiện tại của game vào Local Storage.
@@ -24,6 +60,7 @@ export function saveGame() {
 	maxHP: hero.baseStats.maxHP, // Lưu maxHP cơ bản (từ levelUp)
     currentHP: hero.stats.currentHP, // ✨ THÊM: Lưu HP hiện tại (sử dụng stats đã tính toán)
     name: hero.baseStats.name, // Thêm tên để tải lại (nếu cần)
+    materials: hero.baseStats.materials || { shard: 0 },
 	};
     
     // 2. Thu thập trạng thái Game và Nhiệm vụ
@@ -48,7 +85,7 @@ export function saveGame() {
 
     // 4. Lưu vào Local Storage
     try {
-        localStorage.setItem(SAVE_KEY, JSON.stringify(dataToSave));
+        storage.setItem(SAVE_KEY, JSON.stringify(dataToSave));
         updateSaveLoadUI();
     } catch (e) {
         logMessage(`❌ Lỗi khi lưu game: ${e}`, 'error');
@@ -60,7 +97,7 @@ export function saveGame() {
  * @returns {object | null} Dữ liệu đã tải hoặc null nếu không có.
  */
 export function loadGame() {
-    const savedData = localStorage.getItem(SAVE_KEY);
+    const savedData = storage.getItem(SAVE_KEY);
     if (!savedData) {
         return null;
     }
@@ -96,7 +133,7 @@ export function loadGameAndStart() {
  */
 export function deleteSave() {
     try {
-        localStorage.removeItem(SAVE_KEY);
+        storage.removeItem(SAVE_KEY);
         return true;
     } catch (e) {
         logMessage(`❌ Lỗi khi xóa save: ${e}`, 'error');

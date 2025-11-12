@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "scripts": {
+    "test": "node tools/tests/run_tests.mjs"
+  },
+  "dependencies": {
+    "puppeteer": "^24.29.1"
+  }
+}

@@ -3,46 +3,9 @@
 // Đảm bảo import hero, logger từ game.js
 import { hero, logger } from './game.js'; 
 import { RARITIES } from './data/items.js'; // Import RARITIES để lấy màu sắc
+import { calculateItemUpgradeCost, applyItemUpgrade, ITEM_UPGRADE_MAX_LEVEL } from './itemUpgradeHelpers.js';
 
 const logMessage = (msg, type = 'info') => logger.log(msg, type); 
-
-// Item upgrade configuration
-const ITEM_UPGRADE_MAX_LEVEL = 5;
-const ITEM_UPGRADE_MULTIPLIER_PER_LEVEL = 0.20; // +20% per upgrade level
-
-function calculateItemUpgradeCost(item) {
-    // base factor from primary stats
-    const atk = Number(item.stats?.attack || 0);
-    const def = Number(item.stats?.defense || 0);
-    const hp = Number(item.stats?.maxHP || 0);
-    const base = Math.max(1, Math.round((atk + def + hp / 5)));
-    const currentLevel = Number(item.upgradeLevel || 0);
-    // geometric scaling
-    return Math.max(10, Math.floor(base * 20 * Math.pow(1.6, currentLevel)));
-}
-
-function applyItemUpgrade(item) {
-    // Ensure we keep original baseStats to avoid compounding
-    if (!item.baseStats) item.baseStats = JSON.parse(JSON.stringify(item.stats || {}));
-    const lvl = Number(item.upgradeLevel || 0) + 1;
-    // Apply multiplicative increase to each numeric stat in baseStats
-    const newStats = JSON.parse(JSON.stringify(item.baseStats));
-    const mult = 1 + ITEM_UPGRADE_MULTIPLIER_PER_LEVEL * lvl;
-    for (const k of Object.keys(newStats)) {
-        if (typeof newStats[k] === 'number') {
-            // For small fractional stats (critChance/attackSpeed) keep decimal precision
-            if (k.toLowerCase().includes('chance') || k.toLowerCase().includes('speed') || k.toLowerCase().includes('mult')) {
-                newStats[k] = Number((newStats[k] * mult).toFixed(3));
-            } else {
-                newStats[k] = Math.round(newStats[k] * mult);
-            }
-        }
-    }
-    item.stats = newStats;
-    item.upgradeLevel = lvl;
-    // Increase sellValue moderately
-    if (item.sellValue) item.sellValue = Math.round(item.sellValue * (1 + 0.25 * lvl));
-}
 
 // =======================================================
 // CÁC HANDLER ĐƯỢC EXPORT (Theo yêu cầu của bạn)
@@ -200,17 +163,21 @@ export function renderInventory() {
                     ${isEquipped ? 'Bỏ Mặc' : 'Mặc'}
                 </button>
             `;
-            // Upgrade button for equipable items
-            const upgradeLabel = item.upgradeLevel ? `Upgrade (+${item.upgradeLevel})` : 'Upgrade';
+            // Upgrade button for equipable items: show gold cost and shard requirement
+            const upgradeCost = calculateItemUpgradeCost(item);
+            const shardCost = Math.max(1, Math.floor((item.upgradeLevel || 0) + 1));
+            const upgradeLabel = item.upgradeLevel ? `+${item.upgradeLevel}` : '';
             upgradeButtonHTML = `
                 <button
                     class="upgrade-item-btn text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1 px-3 rounded transition duration-150"
                     data-index="${index}"
+                    data-cost="${upgradeCost}"
+                    data-shard="${shardCost}"
                 >
-                    🔧 ${upgradeLabel}
+                    🔧 ${upgradeLabel} (${upgradeCost}💰 + ${shardCost} Shard)
                 </button>
             `;
-        } 
+        }
         // Nút Sử dụng (Consumable)
         else if (isConsumable) {
             actionButtonHTML = `
@@ -300,12 +267,18 @@ export function handleUpgradeItem(index) {
     const currentLevel = Number(item.upgradeLevel || 0);
     if (currentLevel >= ITEM_UPGRADE_MAX_LEVEL) { logMessage(`⚠️ **${item.name || item.id}** đã đạt cấp nâng cấp tối đa.`, 'info'); return; }
     const cost = calculateItemUpgradeCost(item);
+    const shardCost = Math.max(1, Math.floor((item.upgradeLevel || 0) + 1));
+    // Ensure materials object exists
+    hero.baseStats.materials = hero.baseStats.materials || {};
+    hero.baseStats.materials.shard = hero.baseStats.materials.shard || 0;
     if (hero.baseStats.gold < cost) { logMessage(`⚠️ Không đủ vàng để nâng cấp ${item.name || item.id}. Cần ${cost}💰`, 'warn'); return; }
-    // Deduct gold
+    if (hero.baseStats.materials.shard < shardCost) { logMessage(`⚠️ Không đủ Shard để nâng cấp ${item.name || item.id}. Cần ${shardCost} Shard`, 'warn'); return; }
+    // Deduct gold and shards
     hero.baseStats.gold -= cost;
+    hero.baseStats.materials.shard -= shardCost;
     applyItemUpgrade(item);
     hero.calculateStats();
-    logMessage(`🔧 Đã nâng cấp **${item.name || item.id}** lên +${item.upgradeLevel}. (-${cost}💰)`, 'success');
+    logMessage(`🔧 Đã nâng cấp **${item.name || item.id}** lên +${item.upgradeLevel}. (-${cost}💰, -${shardCost} Shard)`, 'success');
     window.updateUI();
     window.saveGame && window.saveGame();
 }

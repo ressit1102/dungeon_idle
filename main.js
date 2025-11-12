@@ -22,6 +22,7 @@ import {
 // Import các hàm UI phức tạp
 import { renderInventory, handleSellItem, handleEquipItem, handleUseItem, handleUnequip, handleUpgradeItem } from './modules/inventory.js';
 import { renderUpgrades, handleUpgrade, renderDungeonMenu } from './modules/menu.js';
+import { renderMaterials } from './modules/materials.js';
 import { dungeonList } from './modules/data/dungeons.js'; 
 import { saveGame, loadGame as loadGameFromSave, updateSaveLoadUI, deleteSave } from './modules/save.js';
 import { initQuests } from './modules/quest.js';
@@ -45,6 +46,7 @@ function globalUpdateUI() {
     updateGameUI(); 
 	renderInventory(); // Không cần truyền hero, vì hero là export let
 	renderUpgrades();
+    renderMaterials();
 	renderQuests();
 	renderShop();
     updateSaveLoadUI();

@@ -180,6 +180,7 @@ export function updateHeroUI() {
         <div class="hero-stat">Tấn công: <strong>${hero.stats.attack}</strong></div>
         <div class="hero-stat">Phòng thủ: <strong>${hero.stats.defense}</strong></div>
         <div class="hero-stat">Vàng: <strong class="text-yellow-600">${hero.baseStats.gold.toLocaleString()}</strong></div>
+        <div class="hero-stat">Shard: <strong class="text-indigo-500">${(hero.baseStats.materials && hero.baseStats.materials.shard) || 0}</strong></div>
     `;
 
     // Hiển thị chỉ số mới: STR / DEX / INT / LUX và các hệ số phụ
@@ -442,16 +443,26 @@ function handleEnemyDefeated() {
     // ✅ ĐÃ SỬA: Truyền thêm isBossFight và currentDungeon vào generateLoot
     const loot = generateLoot(hero.baseStats.level, isBossFight, currentDungeon);
     if (loot) {
-        const rarityClass = RARITIES[loot.rarity] ? RARITIES[loot.rarity].color : 'text-white';
-        if (hero.addItemToInventory(loot)) { 
-            // Nếu là Unique Item (từ Boss)
-            if (loot.rarity === 'Unique') {
-                 logger.log(`👑 **RƠI ĐỒ BOSS!** Đã nhận ${rarityClass} **${loot.id}**!`, 'loot');
+        // Materials (shards) from loot
+        if (loot.materials && loot.materials.shard) {
+            hero.baseStats.materials = hero.baseStats.materials || {};
+            hero.baseStats.materials.shard = (hero.baseStats.materials.shard || 0) + loot.materials.shard;
+            logger.log(`🔹 Nhận ${loot.materials.shard} Shard(s)!` , 'loot');
+        }
+
+        // Item from loot
+        if (loot.item) {
+            const item = loot.item;
+            const rarityClass = RARITIES[item.rarity] ? RARITIES[item.rarity].color : 'text-white';
+            if (hero.addItemToInventory(item)) { 
+                if (item.rarity === 'Unique') {
+                     logger.log(`👑 **RƠI ĐỒ BOSS!** Đã nhận ${rarityClass} **${item.id}**!`, 'loot');
+                } else {
+                     logger.log(`✨ Rơi đồ: <span class="${rarityClass}">${item.rarity} **${item.id}**</span> đã thêm vào kho đồ.`, 'loot');
+                }
             } else {
-                 logger.log(`✨ Rơi đồ: <span class="${rarityClass}">${loot.rarity} **${loot.id}**</span> đã thêm vào kho đồ.`, 'loot');
+                logger.log(`⚠️ Kho đồ đầy! **${item.id}** đã bị bỏ lại.`, 'warn');
             }
-        } else {
-            logger.log(`⚠️ Kho đồ đầy! **${loot.id}** đã bị bỏ lại.`, 'warn');
         }
     }
 

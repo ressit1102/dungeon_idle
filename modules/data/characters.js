@@ -17,5 +17,7 @@ export const initialHeroStats = {
     critMultiplier: 1.5, // base 150% damage on crit (modified by str)
     gold: 0,
     experience: 0,
+    // Materials / crafting resources
+    materials: { shard: 0 },
     xpToNextLevel: 100,
 };

@@ -10,6 +10,8 @@ export const dungeonList = {
     boss: "Slime King",
     bossLevel: 10,
     relic: "Corroded Core",
+  relicSlot: 'amulet',
+  relicStats: { defense: 5, maxHP: 20 },
     isLocked: false,
     unlocks: "Crypt of Bones"
   },
@@ -24,6 +26,8 @@ export const dungeonList = {
     boss: "Bone Warden",
     bossLevel: 20,
     relic: "Shattered Phylactery",
+  relicSlot: 'amulet',
+  relicStats: { attack: 4, int: 2 },
     isLocked: true,
     unlocks: "Inferno Keep"
   },
@@ -38,6 +42,8 @@ export const dungeonList = {
     boss: "Flame Tyrant",
     bossLevel: 30,
     relic: "Emberheart",
+  relicSlot: 'amulet',
+  relicStats: { attack: 8, critChance: 0.03 },
     isLocked: true,
     unlocks: "Frost Hollow"
   },
@@ -52,6 +58,8 @@ export const dungeonList = {
     boss: "Glacier Lord",
     bossLevel: 40,
     relic: "Crystalized Mantle",
+  relicSlot: 'amulet',
+  relicStats: { defense: 10, maxHP: 40 },
     isLocked: true,
     unlocks: "Abyss"
   },
@@ -66,6 +74,8 @@ export const dungeonList = {
     boss: "Void Emperor",
     bossLevel: 50,
     relic: "Shard of Anomaly",
+  relicSlot: 'amulet',
+  relicStats: { attack: 12, dex: 3, lux: 1 },
     isLocked: true,
     unlocks: null
   }
